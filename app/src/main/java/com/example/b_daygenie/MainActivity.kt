@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -28,12 +29,14 @@ import com.example.b_daygenie.ui.theme.NavRoutes
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 
+
+
 class MainActivity : ComponentActivity() {
+    private val authViewModel: AuthViewModel by viewModels()
+    private val viewModel: BirthdaysViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val authViewModel = AuthViewModel(application)
-        val viewModel = BirthdaysViewModel(application) // created on onCreate, therefore they'll be recreated everytime the screen is rotated
         setContent {
             BDayGenieTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -49,11 +52,8 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: BirthdaysViewModel, au
     val navController = rememberNavController()
     val birthdays = viewModel.birthdays.value
     val errorMessage = viewModel.errorMessage.value
-
-    //val userState = authViewModel.getUserLiveData().observeAsState(initial = FirebaseAuth.getInstance().currentUser) // setting the initial value might be problematic because of several reasons
     val userState = authViewModel.getUserLiveData().observeAsState()
     val user = userState.value
-    val uid = authViewModel.getUserLiveData().value?.uid
 
     LaunchedEffect(user) {
         println("userState value has changed")
@@ -64,7 +64,7 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: BirthdaysViewModel, au
             }
             println("UserId was set")
             viewModel.setUserUid()
-            delay(2000)
+            delay(1000)
             viewModel.getBirthdays()
         } else if (user == null && currentRoute != NavRoutes.Authorization.route) {
             navController.navigate(NavRoutes.Authorization.route) {
@@ -94,7 +94,9 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: BirthdaysViewModel, au
                 errorMessage = errorMessage,
                 onClearErrorMessage = { viewModel.clearErrorMessage() },
                 onLogout = {
+                    viewModel.clearBirthdays()
                     viewModel.logOut()
+                    authViewModel.logOut()
                     navController.navigate(NavRoutes.Authorization.route)
                 }
             )
@@ -112,7 +114,7 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: BirthdaysViewModel, au
         }
         composable(route = NavRoutes.EditProfile.route) {
             EditProfileScreen(
-                uid = uid,
+                uid = authViewModel.getUserLiveData().value?.uid,
                 navController,
                 onAddPerson = { person ->
                     viewModel.add(person);
@@ -125,7 +127,7 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: BirthdaysViewModel, au
             val personId = backstackEntry.arguments?.getInt("personId")
             val person = birthdays.find { it.id == personId }
             EditProfileScreen(
-                uid = uid,
+                uid = authViewModel.getUserLiveData().value?.uid,
                 navController = navController,
                 person = person,
                 onUpdatePerson = { updatedPerson -> viewModel.update(updatedPerson); viewModel.getBirthdays()}

@@ -11,6 +11,17 @@ class AuthRepository(private val application: Application) {
     private val userLiveData: MutableLiveData<FirebaseUser?> = MutableLiveData()
     private val loggedOutLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
+    companion object {
+        @Volatile
+        private var INSTANCE: AuthRepository? = null
+
+        fun getInstance(application: Application): AuthRepository {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: AuthRepository(application).also { INSTANCE = it }
+            }
+        }
+    }
+
     init {
         if (firebaseAuth.currentUser != null) {
             userLiveData.postValue(firebaseAuth.currentUser)

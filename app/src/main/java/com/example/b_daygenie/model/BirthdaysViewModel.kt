@@ -13,7 +13,8 @@ import com.example.b_daygenie.utils.SortState
 import com.google.firebase.auth.FirebaseUser
 
 class BirthdaysViewModel(application: Application): AndroidViewModel(application) {
-    private val authRepository: AuthRepository = AuthRepository(application)
+    //private val authRepository: AuthRepository = AuthRepository(application)
+    private val authRepository = AuthRepository.getInstance(application)
     private val userLiveData: MutableLiveData<FirebaseUser?> = authRepository.getUserLiveData()
     private val loggedOutLiveData: MutableLiveData<Boolean> = authRepository.getLoggedOutLiveData()
     private val repository = BirthdaysRepository()
@@ -22,7 +23,6 @@ class BirthdaysViewModel(application: Application): AndroidViewModel(application
     val isLoadingBirthdays: State<Boolean> = repository.isLoadingBirthdays
 
     fun logOut() {
-        authRepository.logout()
         repository.userUid = ""
     }
 
@@ -49,6 +49,10 @@ class BirthdaysViewModel(application: Application): AndroidViewModel(application
 
     fun update(person: Person) {
         repository.update(person)
+    }
+
+    fun clearBirthdays() {
+        repository.clearBirthdays()
     }
 
     fun sortBirthdays(ageSortState: MutableState<SortState>, nameSortState: MutableState<SortState>, birthdaySortState: MutableState<SortState>) {

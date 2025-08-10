@@ -112,6 +112,10 @@ class BirthdaysRepository {
         })
     }
 
+    fun clearBirthdays() {
+        birthdays.value = listOf()
+    }
+
     private fun sortBirthdaysByAge(list: List<Person>, ascending: Boolean): List<Person> {
         return if(ascending) list.sortedBy { it.age } else list.sortedByDescending { it.age }
     }
