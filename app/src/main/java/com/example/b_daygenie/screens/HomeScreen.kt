@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -95,9 +97,10 @@ private val somePeople = mutableStateListOf(
         onFilter: (MutableState<String>, MutableFloatState, MutableFloatState) -> Unit,
         errorMessage: String,
         onClearErrorMessage: () -> Unit,
-        onLogout: () -> Unit
+        onLogout: () -> Unit,
+        isLoadingBirthdays: Boolean
     ) {
-        MainContent(navController, birthdays, onPersonSelected, onUpdateList, onSort, onFilter, errorMessage, onClearErrorMessage, onLogout)
+        MainContent(navController, birthdays, onPersonSelected, onUpdateList, onSort, onFilter, errorMessage, onClearErrorMessage, onLogout, isLoadingBirthdays)
     }
 
     @Composable
@@ -109,7 +112,8 @@ private val somePeople = mutableStateListOf(
                     onFilter: (MutableState<String>, MutableFloatState, MutableFloatState) -> Unit,
                     errorMessage: String,
                     onClearErrorMessage: () -> Unit,
-                    onLogout: () -> Unit
+                    onLogout: () -> Unit,
+                    isLoadingBirthdays: Boolean
     ) {
         val showDialog = remember { mutableStateOf(false) }
         val ageSortState = remember { mutableStateOf(SortState.NONE) }
@@ -127,6 +131,9 @@ private val somePeople = mutableStateListOf(
             Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
                 if (errorMessage.isNotEmpty()) {
                     ConnectionSnackbar("Reload", errorMessage, snackBarHostState, onUpdateList, onClearErrorMessage = onClearErrorMessage)
+                }
+                if (isLoadingBirthdays) {
+                    LoadingIndicator()
                 }
                 if (showDialog.value) {
                     SortDialog(
@@ -492,6 +499,20 @@ fun FilterByAge(filterByAgeStartPosition: MutableFloatState, filterByAgeEndPosit
             disabledInactiveTickColor = Color.Gray
         )
     )
+}
+
+@Composable
+fun LoadingIndicator() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.width(64.dp),
+            color = MaterialTheme.colorScheme.secondary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+    }
 }
 
     @Preview

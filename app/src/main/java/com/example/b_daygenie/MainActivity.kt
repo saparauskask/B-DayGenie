@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -26,9 +25,7 @@ import com.example.b_daygenie.screens.HomeScreen
 import com.example.b_daygenie.screens.ViewProfileScreen
 import com.example.b_daygenie.ui.theme.BDayGenieTheme
 import com.example.b_daygenie.ui.theme.NavRoutes
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
-
 
 
 class MainActivity : ComponentActivity() {
@@ -51,6 +48,7 @@ class MainActivity : ComponentActivity() {
 fun MainContent(modifier: Modifier = Modifier, viewModel: BirthdaysViewModel, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     val birthdays = viewModel.birthdays.value
+    val isLoadingBirthdays = viewModel.isLoadingBirthdays.value
     val errorMessage = viewModel.errorMessage.value
     val userState = authViewModel.getUserLiveData().observeAsState()
     val user = userState.value
@@ -98,7 +96,8 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: BirthdaysViewModel, au
                     viewModel.logOut()
                     authViewModel.logOut()
                     navController.navigate(NavRoutes.Authorization.route)
-                }
+                },
+                isLoadingBirthdays = isLoadingBirthdays
             )
         }
         composable(NavRoutes.ViewProfile.route + "/{personId}", arguments = listOf(navArgument("personId") { type = NavType.IntType })) {
@@ -117,7 +116,7 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: BirthdaysViewModel, au
                 uid = authViewModel.getUserLiveData().value?.uid,
                 navController,
                 onAddPerson = { person ->
-                    viewModel.add(person);
+                    viewModel.add(person)
                     viewModel.getBirthdays()
                 }
             )

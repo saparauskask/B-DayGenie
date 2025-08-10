@@ -3,12 +3,10 @@ package com.example.b_daygenie.model
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.b_daygenie.repository.AuthRepository
 import com.google.firebase.auth.FirebaseUser
 
 class AuthViewModel(application: Application): AndroidViewModel(application) {
-    //private val authRepository = AuthRepository(application)
     private val authRepository = AuthRepository.getInstance(application)
     private val userLiveData: MutableLiveData<FirebaseUser?> = authRepository.getUserLiveData()
 
