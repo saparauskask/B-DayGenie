@@ -64,6 +64,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -148,6 +149,9 @@ private val somePeople = mutableStateListOf(
                         onFilter,
                         onUpdateList
                     )
+                }
+                if(!isLoadingBirthdays && birthdays.isEmpty()) {
+                    DisplayNoBirthdays()
                 }
                 Column(mainModifier, horizontalAlignment = Alignment.CenterHorizontally) {
                     EntriesManager(birthdays, onPersonSelected)
@@ -512,6 +516,13 @@ fun LoadingIndicator() {
             color = MaterialTheme.colorScheme.secondary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
         )
+    }
+}
+
+@Composable
+fun DisplayNoBirthdays(){
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text("There are no entries yet. Add one.")
     }
 }
 

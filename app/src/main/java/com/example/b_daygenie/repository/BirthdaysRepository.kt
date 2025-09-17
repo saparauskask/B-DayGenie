@@ -13,7 +13,7 @@ import retrofit2.Response
 import retrofit2.converter.gson.GsonConverterFactory
 
 class BirthdaysRepository {
-    private val baseUrl = "https://birthdaysrest.azurewebsites.net/api/"
+    private val baseUrl = "http://10.0.2.2:8000/api/"
 
     private val birthdaysService: BirthdaysService
     val birthdays: MutableState<List<Person>> = mutableStateOf(listOf())
