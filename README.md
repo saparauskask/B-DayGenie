@@ -64,9 +64,9 @@
 
 ### Screenshots
 
-| ![Login Screen](assets/screenshot1.png)   | ![Main Screen](assets/screenshot2.png)       |
+| ![Login Screen](assets/Screenshot1.png)   | ![Main Screen](assets/Screenshot2.png)       |
 | ----------------------------------------- | -------------------------------------------- |
-| ![Profile Screen](assets/screenshot3.png) | ![Organizing Dialog](assets/screenshot4.png) |
+| ![Profile Screen](assets/Screenshot3.png) | ![Organizing Dialog](assets/Screenshot4.png) |
 
 
 
